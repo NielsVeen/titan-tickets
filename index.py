@@ -1,5 +1,5 @@
 from flask import Flask,request,json
-from db import upload_to_db
+from dbapp import upload_to_db
 app = Flask(__name__)
 
 @app.route("/")
@@ -28,4 +28,4 @@ def webhook():
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host="0.0.0.0",port=5000)
