@@ -8,7 +8,7 @@ def home():
 
 @app.route('/webhook',methods=['GET','POST'])
 def webhook():
-    if request.method == 'POST':
+    if request.method == 'GET':
         data = request.json
         if data['page'] == "https://tickets.titanmaker.io/lesson/lesson-1/":
             submit_id = data['submit_id']
