@@ -6,7 +6,7 @@ app = Flask(__name__)
 def home():
     return "Webhook is working!"
 
-@app.route('/webhook',methods=['POST'])
+@app.route('/webhook',methods=['GET','POST'])
 def webhook():
     data = request.json
     if data['page'] == "https://tickets.titanmaker.io/lesson/lesson-1/":
