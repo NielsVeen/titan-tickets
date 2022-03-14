@@ -1,5 +1,6 @@
-web3
-pymongo
-certifi
 flask
-gunicorn
+web3
+dotenv
+os
+certifi
+pymongo

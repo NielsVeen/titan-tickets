@@ -1,16 +1,23 @@
 from flask import Flask,request,json
 from dbapp import upload_to_db
+from dotenv import load_dotenv
 app = Flask(__name__)
 
 @app.route("/")
 def home():
     return "Webhook is working!"
 
-@app.route('/webhook',methods=['GET','POST'])
+@app.route('/webhook',methods=['POST'])
 def webhook():
-    if request.method == 'GET':
+
+    if request.method == 'POST':
         data = request.json
+
+        if data == None:
+            return "NOTHING IN STORE"
+
         if data['page'] == "https://tickets.titanmaker.io/lesson/lesson-1/":
+
             submit_id = data['submit_id']
             email = data['email']
             cro_address = data['cro_address']
@@ -24,11 +31,11 @@ def webhook():
             else:
                 # Code that runs if record already exists
                 return 'Account already existed'
-            return 'success', 200
+           
         else: return 'error', 404
     else:
         return 'Webhook page!'
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0",port=5000)
+    app.run()
