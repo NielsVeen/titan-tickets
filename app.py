@@ -1,41 +1,34 @@
-from flask import Flask,request,json
-from dbapp import upload_to_db
-from dotenv import load_dotenv
+from flask import Flask,request,jsonify,json
+from database import database
+from send import send_cro
 app = Flask(__name__)
 
-@app.route("/")
+@app.route('/', methods=['GET'])
 def home():
-    return "Webhook is working!"
+    return 'Homepage'
 
-@app.route('/webhook',methods=['POST'])
-def webhook():
-
-    if request.method == 'POST':
+@app.route('/post',methods=['POST'])
+def post():
+    if request.json:
         data = request.json
 
-        if data == None:
-            return "NOTHING IN STORE"
+        # Create variables from request data
+        submission_id = data['submit_id']
+        email = data['email']
+        cro_address = data['cro_address']
+        ip_address = data['ip']
 
-        if data['page'] == "https://tickets.titanmaker.io/lesson/lesson-1/":
+        # Run database function
+        db = database(submission_id,email,cro_address,ip_address)
 
-            submit_id = data['submit_id']
-            email = data['email']
-            cro_address = data['cro_address']
-            ip_address = data['ip']
-            print('check with db')
-            db = upload_to_db(submit_id,email,cro_address,ip_address)
+        if db == True:
+            print('sending funds')
+            send_cro(data['cro_address'])
+            print('funds sent')
+            return 'nice it worked',200
+        else:
+            return 'something wrong with data', 200
+    return 'no data',404
 
-            if db == True:
-                # Code you want to run if the record does not exist
-                return 'Account is added!'
-            else:
-                # Code that runs if record already exists
-                return 'Account already existed'
-           
-        else: return 'error', 404
-    else:
-        return 'Webhook page!'
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
+if __name__ == '__main__':
+    app.run(threaded=True,port=5000)
